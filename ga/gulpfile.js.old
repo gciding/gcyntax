@@ -1,0 +1,44 @@
+var gulp = require('gulp'),
+    minifycss = require('gulp-minify-css'),
+    uglify = require('gulp-uglify'),
+    imagemin = require('gulp-imagemin'),
+    rename = require('gulp-rename'),
+    clean = require('gulp-clean'),
+    concat = require('gulp-concat'),
+    cache = require('gulp-cache');
+
+var paths = {
+    appScripts: [], 
+    appStyles: [],
+    images: [],
+    // CodeMirror Modes
+    altScripts: [],     
+    // CodeMirror Themes
+    altStyles: []      
+};
+
+// Handle the core applications scripts
+gulp.task('app_scripts', function(){
+    return gulp.src(paths.appScripts)
+        .pipe(uglify())
+        .pipe(concat('app.min.js'))
+        .pipe(gulp.dest('build/js'));
+});
+
+// Handle the core styles for the default application
+gulp.task('app_styles', function() {
+    return gulp.src(paths.appStyles)
+        .pipe(minifycss())
+        .pipe(concat('app.min.css'))
+        .pipe(gulp.dest('build/css'));
+});
+
+gulp.task('clean', function() {
+  return gulp.src(['build/css', 'build/js'], {read: false})
+    .pipe(clean());
+});
+
+// Run these when gulp is run on command line
+gulp.task('default', ['clean'], function() {
+    gulp.start('app_scripts', 'app_styles');
+});
